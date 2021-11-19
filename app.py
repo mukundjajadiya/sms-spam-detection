@@ -36,27 +36,8 @@ def transform_text(text):
 tfidf = pickle.load(open('vectorizer.pkl', 'rb'))
 model = pickle.load(open('model.pkl', 'rb'))
 
+# streamlit customizations
 st.set_page_config(page_title='sms-spam-detection | mukund-jajadiya', page_icon = 'img\page-img.jpg')
-
-st.title("Email/SMS Spam Classifier")
-
-input_sms = st.text_area("Enter the message")
-
-if st.button('Predict'):
-
-    # 1. preprocess
-    transformed_sms = transform_text(input_sms)
-    # 2. vectorize
-    vector_input = tfidf.transform([transformed_sms])
-    # 3. predict
-    result = model.predict(vector_input)[0]
-    # 4. Display
-    if result == 1:
-        st.header("Spam")
-    else:
-        st.header("Not Spam")
-
-
 hide_streamlit_style = """
             <style>
             #MainMenu {visibility: hidden;}
@@ -64,3 +45,24 @@ hide_streamlit_style = """
             </style>
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
+st.title("Email/SMS Spam Classifier")
+
+input_sms = st.text_area("Enter the message")
+
+# Check input_sms is not empty
+if st.button('Predict'):
+    if len(input_sms) > 1:
+        # 1. preprocess
+        transformed_sms = transform_text(input_sms)
+        # 2. vectorize
+        vector_input = tfidf.transform([transformed_sms])
+        # 3. predict
+        result = model.predict(vector_input)[0]
+        # 4. Display
+        if result == 1:
+            st.header("Spam")
+        else:
+            st.header("Not Spam")
+
+
